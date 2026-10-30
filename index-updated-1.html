@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BNC — Beyond Nocturnal Circles</title>
+<style>
+:root {
+  --site-primary: #8b5cf6;
+  --site-on-primary: #ffffff;
+  --site-secondary: #211638;
+  --site-on-secondary: #f5efff;
+  --site-background: #0b0911;
+  --site-on-background: #f7f3ff;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+  color-scheme: light dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--site-background); color: var(--site-on-background); font-family: var(--site-font-body); }
+#app { min-height: 100vh; width: 100%; background-color: var(--site-background); color: var(--site-on-background); border-radius: 0; overflow: hidden; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; }
+.wrap { width: min(1120px, calc(100% - 44px)); margin: 0 auto; }
+.topbar { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(18px); background: color-mix(in srgb, var(--site-background) 84%, transparent); border-bottom: 1px solid rgba(255,255,255,.08); }
+.nav { height: 76px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.brand { display:flex; align-items:center; gap:12px; font-weight:900; letter-spacing:.16em; }
+.brand-mark { width:40px; height:40px; display:grid; place-items:center; border-radius:13px; background:var(--site-primary); color:var(--site-on-primary); font-size:14px; letter-spacing:-.08em; box-shadow:0 8px 30px rgba(139,92,246,.28); }
+.brand small { display:block; color:#a99bbd; font-size:9px; letter-spacing:.24em; margin-top:3px; font-weight:700; }
+.navlinks { display:flex; align-items:center; gap:30px; color:#c6bbd3; font-size:13px; font-weight:650; }
+.navlinks a:hover { color:white; }
+.nav-cta,.button { border:0; border-radius:999px; padding:13px 19px; background:var(--site-primary); color:var(--site-on-primary); font-size:12px; font-weight:800; letter-spacing:.04em; cursor:pointer; transition:transform .2s, filter .2s; }
+.nav-cta:hover,.button:hover { transform:translateY(-2px); filter:brightness(1.12); }
+.menu { display:none; border:1px solid rgba(255,255,255,.15); background:transparent; color:white; border-radius:10px; padding:9px 12px; }
+.hero { position:relative; padding:105px 0 92px; isolation:isolate; }
+.hero:before,.hero:after { content:""; position:absolute; z-index:-1; pointer-events:none; opacity:var(--site-decoration-opacity); border-radius:50%; filter:blur(2px); }
+.hero:before { width:480px;height:480px;right:-120px;top:-100px;background:radial-gradient(circle,rgba(139,92,246,.24),transparent 68%); }
+.hero:after { width:340px;height:340px;left:-180px;bottom:-80px;background:radial-gradient(circle,rgba(80,50,140,.22),transparent 70%); }
+.eyebrow { display:inline-flex; align-items:center; gap:9px; color:#c6aaff; font-size:10px; font-weight:850; letter-spacing:.24em; text-transform:uppercase; }
+.eyebrow:before { content:""; width:24px; height:1px; background:var(--site-primary); }
+h1,h2,h3 { font-family:var(--site-font-heading); }
+h1 { max-width:800px; margin:22px 0 20px; font-size:clamp(52px,8vw,96px); line-height:.94; letter-spacing:-.075em; font-weight:950; }
+.gradient { background:linear-gradient(100deg,#fff 10%,#c9aaff 52%,#8b5cf6 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.hero-copy { max-width:560px; color:#b7adbf; line-height:1.8; font-size:15px; }
+.hero-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; }
+.button.secondary { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15); color:#eee7f7; }
+.hero-meta { display:flex; gap:34px; margin-top:65px; padding-top:24px; border-top:1px solid rgba(255,255,255,.1); max-width:650px; }
+.metric strong { display:block; font-size:23px; letter-spacing:-.04em; }
+.metric span { display:block; color:#8e849b; font-size:10px; text-transform:uppercase; letter-spacing:.16em; margin-top:5px; }
+.section { padding:82px 0; }
+.section.alt { background:var(--site-secondary); }
+.section-head { display:flex; align-items:end; justify-content:space-between; gap:24px; margin-bottom:34px; }
+.section h2 { margin:12px 0 0; font-size:clamp(34px,5vw,52px); letter-spacing:-.06em; line-height:1; }
+.subcopy { color:#a99fb3; max-width:390px; line-height:1.7; font-size:13px; }
+.about-grid { display:grid; grid-template-columns:1.1fr .9fr; gap:50px; align-items:center; }
+.about-panel { border:1px solid rgba(255,255,255,.1); border-radius:calc(24px * var(--site-radius-scale)); padding:30px; background:rgba(255,255,255,.035); }
+.about-panel p { color:#b7adbf; line-height:1.85; font-size:14px; }
+.values { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:22px; }
+.value { padding:16px; border-radius:14px; background:rgba(139,92,246,.1); border:1px solid rgba(180,145,255,.13); }
+.value b { display:block; font-size:12px; margin-bottom:5px; }
+.value span { color:#a99fb3; font-size:11px; line-height:1.5; }
+.member-tools { display:flex; gap:10px; align-items:center; }
+.search { width:210px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.05); color:white; border-radius:999px; padding:11px 15px; outline:none; }
+.search:focus { border-color:var(--site-primary); }
+.filters { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:22px; }
+.filter { cursor:pointer; border:1px solid rgba(255,255,255,.13); color:#bdb2ca; background:transparent; padding:8px 13px; border-radius:999px; font-size:11px; }
+.filter.active { background:var(--site-primary); color:white; border-color:var(--site-primary); }
+.members { display:grid; grid-template-columns:repeat(4,1fr); gap:13px; }
+.member { padding:19px; border-radius:calc(18px * var(--site-radius-scale)); border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.035); min-height:145px; transition:transform .2s,border-color .2s; }
+.member:hover { transform:translateY(-4px); border-color:rgba(177,139,255,.55); }
+.member-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; }
+.avatar { width:35px;height:35px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#9b72f7,#39245e);font-size:12px;font-weight:900; }
+.role { color:#c6aaff; font-size:9px; text-transform:uppercase; letter-spacing:.13em; border:1px solid rgba(198,170,255,.22); padding:5px 7px; border-radius:99px; }
+.member h3 { margin:0 0 5px; font-size:15px; letter-spacing:.01em; }
+.member p { margin:0; color:#82788e; font-size:10px; }
+.empty { display:none; color:#a99fb3; padding:24px 0; }
+.join { padding:70px 0; text-align:center; background:linear-gradient(120deg,#24183b,#130f1d 60%,#251747); border-top:1px solid rgba(255,255,255,.08); border-bottom:1px solid rgba(255,255,255,.08); }
+.join h2 { margin:14px auto; max-width:700px; font-size:clamp(36px,5vw,58px); letter-spacing:-.06em; }
+.join p { color:#b7adbf; max-width:520px; margin:0 auto 25px; line-height:1.7; font-size:13px; }
+.footer { padding:30px 0; color:#81788d; font-size:10px; }
+.footer-inner { display:flex; justify-content:space-between; align-items:center; gap:15px; }
+.footer strong { color:#e9e1f3; letter-spacing:.15em; }
+@media(max-width:850px) { .members {grid-template-columns:repeat(2,1fr)} .about-grid {grid-template-columns:1fr;gap:24px} .section-head {align-items:start;flex-direction:column} .member-tools {width:100%}.search{width:100%} }
+@media(max-width:620px) { .wrap{width:min(100% - 32px,1120px)} .nav{height:66px}.menu{display:block}.navlinks{display:none;position:absolute;top:66px;left:0;right:0;padding:18px 22px 22px;background:#100d18;border-bottom:1px solid rgba(255,255,255,.1);flex-direction:column;align-items:flex-start;gap:18px}.navlinks.open{display:flex}.nav-cta{display:none}.hero{padding:78px 0 65px}h1{font-size:58px}.hero-meta{gap:20px;flex-wrap:wrap;margin-top:45px}.metric strong{font-size:20px}.section{padding:62px 0}.members{gap:9px}.member{padding:14px;min-height:138px}.member h3{font-size:13px}.role{font-size:8px}.values{grid-template-columns:1fr 1fr}.footer-inner{align-items:flex-start;flex-direction:column} }
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+<header class="topbar"><div class="wrap nav">
+  <a class="brand" href="#home" aria-label="BNC home"><span class="brand-mark">BNC</span><span>BNC<small>UNITED BY PURPOSE</small></span></a>
+  <nav class="navlinks" id="navlinks"><a href="#about">About</a><a href="#members">Members</a><a href="#values">Our values</a><a href="#join">Join us</a></nav>
+  <a class="nav-cta" href="#join">BECOME ONE OF US ↗</a>
+  <button class="menu" id="menuBtn" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+</div></header>
+<main>
+<section class="hero" id="home"><div class="wrap">
+  <span class="eyebrow">A circle built on loyalty</span>
+  <h1>MORE THAN A<br><span class="gradient">NAME.</span><br>A LEGACY.</h1>
+  <p class="hero-copy">We don't chase people, we chase growth. We don't beg for attention, we value our worth. BNC is a community built on respect, unity, and the people who choose to stand together.</p>
+  <div class="hero-actions"><a class="button" href="#about">DISCOVER BNC ↗</a><a class="button secondary" href="#members">MEET THE MEMBERS</a></div>
+  <div class="hero-meta"><div class="metric"><strong>ONE</strong><span>United community</span></div><div class="metric"><strong>RESPECT</strong><span>Our foundation</span></div><div class="metric"><strong>GROWTH</strong><span>Our direction</span></div></div>
+</div></section>
+<section class="section alt" id="about"><div class="wrap about-grid">
+  <div><span class="eyebrow">Who we are</span><h2>A bond beyond<br>the ordinary.</h2><p class="subcopy" style="margin-top:18px">A space for people who value character over clout and loyalty over empty promises.</p></div>
+  <div class="about-panel"><span class="eyebrow">The BNC standard</span><p>BNC stands for more than a group name. It represents a shared commitment to support one another, keep growing, and create a space where every member has a place. We move with purpose, carry ourselves with respect, and let our actions speak.</p>
+  <div class="values" id="values"><div class="value"><b>01 / Loyalty</b><span>Stand with the people who stand with you.</span></div><div class="value"><b>02 / Growth</b><span>Choose progress over attention.</span></div><div class="value"><b>03 / Respect</b><span>Value every voice in the circle.</span></div><div class="value"><b>04 / Unity</b><span>Different stories, one community.</span></div></div></div>
+</div></section>
+<section class="section" id="members"><div class="wrap">
+  <div class="section-head"><div><span class="eyebrow">The people behind BNC</span><h2>Meet the circle.</h2></div><div class="member-tools"><input class="search" id="memberSearch" type="search" placeholder="Search members..." aria-label="Search members"></div></div>
+  <div class="filters" role="group" aria-label="Filter members"><button class="filter active" data-filter="All">All members</button><button class="filter" data-filter="Owner">Owner</button><button class="filter" data-filter="Admin">Admins</button><button class="filter" data-filter="Member">Members</button></div>
+  <div class="members" id="memberGrid">
+    <article class="member" data-name="Chad" data-role="Owner"><div class="member-top"><span class="avatar">CH</span><span class="role">Owner</span></div><h3>CHAD</h3><p>Founder · BNC</p></article>
+    <article class="member" data-name="Noctyssia" data-role="Admin"><div class="member-top"><span class="avatar">NO</span><span class="role">Admin</span></div><h3>NOCTYSSIA</h3><p>Leadership team</p></article>
+    <article class="member" data-name="Demonita" data-role="Admin"><div class="member-top"><span class="avatar">DE</span><span class="role">Admin</span></div><h3>DEMONITA</h3><p>Leadership team</p></article>
+    <article class="member" data-name="Hexia" data-role="Admin"><div class="member-top"><span class="avatar">HE</span><span class="role">Admin</span></div><h3>HEXIA</h3><p>Leadership team</p></article>
+    <article class="member" data-name="Ave" data-role="Admin"><div class="member-top"><span class="avatar">AV</span><span class="role">Admin</span></div><h3>AVE</h3><p>Leadership team</p></article>
+    <article class="member" data-name="Veyr" data-role="Admin"><div class="member-top"><span class="avatar">VE</span><span class="role">Admin</span></div><h3>VEYR</h3><p>Leadership team</p></article>
+    <article class="member" data-name="Jeday" data-role="Admin"><div class="member-top"><span class="avatar">JE</span><span class="role">Admin</span></div><h3>JEDAY</h3><p>Leadership team</p></article>
+    <article class="member" data-name="Apol" data-role="Member"><div class="member-top"><span class="avatar">AP</span><span class="role">Member</span></div><h3>APOL</h3><p>BNC member</p></article>
+    <article class="member" data-name="Ryuu" data-role="Admin"><div class="member-top"><span class="avatar">RY</span><span class="role">Admin</span></div><h3>RYUU</h3><p>Leadership team</p></article>
+    <article class="member" data-name="Gideon" data-role="Member"><div class="member-top"><span class="avatar">GI</span><span class="role">Member</span></div><h3>GIDEON</h3><p>BNC member</p></article>
+    <article class="member" data-name="Lollie" data-role="Member"><div class="member-top"><span class="avatar">LO</span><span class="role">Member</span></div><h3>LOLLIE</h3><p>BNC member</p></article>
+    <article class="member" data-name="Ziggy" data-role="Member"><div class="member-top"><span class="avatar">ZI</span><span class="role">Member</span></div><h3>ZIGGY</h3><p>BNC member</p></article>
+    <article class="member" data-name="Alliah" data-role="Member"><div class="member-top"><span class="avatar">AL</span><span class="role">Member</span></div><h3>ALLIAH</h3><p>BNC member</p></article>
+    <article class="member" data-name="Veil" data-role="Member"><div class="member-top"><span class="avatar">VI</span><span class="role">Member</span></div><h3>VEIL</h3><p>BNC member</p></article>
+    <article class="member" data-name="Sachi" data-role="Member"><div class="member-top"><span class="avatar">SA</span><span class="role">Member</span></div><h3>SACHI</h3><p>BNC member</p></article>
+    <article class="member" data-name="Jekay" data-role="Member"><div class="member-top"><span class="avatar">JE</span><span class="role">Member</span></div><h3>JEKAY</h3><p>BNC member</p></article>
+  </div><p class="empty" id="emptyState">No members match your search.</p>
+</div></section>
+<section class="join" id="join"><div class="wrap"><span class="eyebrow">Your place in the circle</span><h2>GROW WITH US.<br><span class="gradient">MOVE AS ONE.</span></h2><p>BNC is built by the people who show up, support one another, and keep moving forward. If you share the standard, there's room to connect.</p><a class="button" href="#home">BACK TO THE TOP ↑</a></div></section>
+</main>
+<footer class="footer"><div class="wrap footer-inner"><div><strong>BNC</strong> &nbsp; Beyond the name. Beyond the ordinary.</div><div>BUILT ON UNITY · DRIVEN BY GROWTH</div><div>© <span id="year"></span> BNC COMMUNITY</div></div></footer>
+</div>
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const navlinks = document.getElementById('navlinks');
+menuBtn.addEventListener('click', () => {
+  const open = navlinks.classList.toggle('open');
+  menuBtn.setAttribute('aria-expanded', String(open));
+  menuBtn.textContent = open ? '✕' : '☰';
+});
+navlinks.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+  navlinks.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.textContent = '☰';
+}));
+let activeFilter = 'All';
+const search = document.getElementById('memberSearch');
+const cards = [...document.querySelectorAll('.member')];
+function updateMembers() {
+  const term = search.value.trim().toLowerCase();
+  let shown = 0;
+  cards.forEach(card => {
+    const matchRole = activeFilter === 'All' || card.dataset.role === activeFilter;
+    const matchName = card.dataset.name.toLowerCase().includes(term);
+    card.style.display = matchRole && matchName ? '' : 'none';
+    if (matchRole && matchName) shown++;
+  });
+  document.getElementById('emptyState').style.display = shown ? 'none' : 'block';
+}
+document.querySelectorAll('.filter').forEach(button => button.addEventListener('click', () => {
+  document.querySelectorAll('.filter').forEach(item => item.classList.remove('active'));
+  button.classList.add('active'); activeFilter = button.dataset.filter; updateMembers();
+}));
+search.addEventListener('input', updateMembers);
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
